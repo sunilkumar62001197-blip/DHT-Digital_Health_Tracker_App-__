@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Dashboard - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <style>
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .feature-card {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(59, 130, 246, 0.1));
+      border: 2px solid rgba(20, 184, 166, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(20, 184, 166, 0.3);
+      border-color: rgba(20, 184, 166, 0.8);
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .feature-card:hover::before {
+      left: 100%;
+    }
+    
+    .feature-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 20px currentColor);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    .feature-card.ai-feature {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+    
+    .feature-card.ai-feature:hover {
+      border-color: rgba(139, 92, 246, 0.8);
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+    }
+    
+    .feature-card.premium {
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(239, 68, 68, 0.1));
+      border-color: rgba(251, 146, 60, 0.3);
+    }
+    
+    .feature-card.premium:hover {
+      border-color: rgba(251, 146, 60, 0.8);
+      box-shadow: 0 20px 40px rgba(251, 146, 60, 0.3);
+    }
+    
+    .feature-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(20, 184, 166, 0.9);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .feature-badge.new {
+      background: rgba(239, 68, 68, 0.9);
+      animation: blink 1.5s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .feature-badge.ai {
+      background: rgba(139, 92, 246, 0.9);
+    }
+    
+    .quick-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+    
+    .quick-btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, #14b8a6, #3b82f6);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+    }
+    
+    .quick-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(20, 184, 166, 0.5);
+    }
+    
+    .quick-btn.ai {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .section-header h2 {
+      margin: 0;
+      flex: 1;
+    }
+    
+    .view-all-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .view-all-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="summary.html" class="nav-link">Summary</a></li>
+        <li><a href="body-insights.html" class="nav-link">Body Insights</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link">Settings</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <div class="content-section">
+        <h1>👋 Welcome Back, <span id="userName">Student</span></h1>
+        <p style="color: var(--text-secondary);">Here's your daily health overview</p>
+      </div>
+      
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="openQuickAdd()">
+          ➕ Add Health Data
+        </button>
+        <button class="quick-btn ai" onclick="window.location.href='/body-insights.html'">
+          🧬 3D Motion Views
+        </button>
+      </div>
+      
+      <!-- Health Score & Stats (existing content) -->
+      <div class="stats-grid" id="statsGrid">
+        <!-- Stats will be populated by JavaScript -->
+      </div>
+      
+      <!-- Charts Section (existing) -->
+      <div class="charts-section" id="chartsSection">
+        <!-- Charts remain as they are -->
+      </div>
+      
+      <!-- AI & Advanced Features Section -->
+      <div class="section-header">
+        <h2>🤖 AI-Powered Features</h2>
+        <button class="view-all-btn" onclick="showAllAIFeatures()">View All</button>
+      </div>
+      
+      <div class="features-grid">
+        <!-- AI Chatbot -->
+        <div class="feature-card ai-feature" onclick="window.location.href='/chatbot.html'">
+          <span class="feature-badge new">NEW</span>
+          <div class="feature-icon">🤖</div>
+          <h3>AI Health Chatbot</h3>
+          <p>Ask about diseases, symptoms, and health tips. Powered by Medical AI.</p>
+        </div>
+        
+        <!-- AI Vision (OpenCV) -->
+        <div class="feature-card ai-feature" onclick="window.location.href='/ai-vision.html'">
+          <span class="feature-badge ai">OpenCV</span>
+          <div class="feature-icon">👁️</div>
+          <h3>Face Scan & AI Vision</h3>
+          <p>Real-time face detection, stress analysis, and fatigue monitoring using Camera.</p>
+        </div>
+        
+        <!-- 3D Body & Motion -->
+        <div class="feature-card ai-feature" onclick="window.location.href='/body-insights.html'">
+          <span class="feature-badge">VIDEO/3D</span>
+          <div class="feature-icon">🧬</div>
+          <h3>3D Motion & Internal Organs</h3>
+          <p>View animated Heart, Brain Neurons, and Body internals in 3D motion slides.</p>
+        </div>
+        
+        <!-- Heart Rate & Vitals -->
+        <div class="feature-card ai-feature" onclick="window.location.href='/ai-vision.html'">
+          <span class="feature-badge ai">LIVE</span>
+          <div class="feature-icon">❤️</div>
+          <h3>Heart Rate Monitor</h3>
+          <p>Measure heart rate using camera photoplethysmography (PPG) tech.</p>
+        </div>
+      </div>
+      
+      <!-- Health Tracking Features -->
+      <div class="section-header">
+        <h2>📊 Health Tracking</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card" onclick="window.location.href='/summary.html'">
+          <div class="feature-icon">📈</div>
+          <h3>Analytics Dashboard</h3>
+          <p>Detailed charts and trends for all health metrics</p>
+        </div>
+        
+        <div class="feature-card" onclick="window.location.href='/doctor.html'">
+          <div class="feature-icon">👨‍⚕️</div>
+          <h3>Doctor Reports</h3>
+          <p>Professional PDF reports with health flags & recommendations</p>
+        </div>
+        
+        <div class="feature-card" onclick="showHealthScore()">
+          <div class="feature-icon">💯</div>
+          <h3>Health Score</h3>
+          <p>Overall wellness score (0-100) based on all metrics</p>
+        </div>
+        
+        <div class="feature-card" onclick="showMoodTracking()">
+          <div class="feature-icon">😊</div>
+          <h3>Mood Tracking</h3>
+          <p>Daily mood logging with calendar heatmap visualization</p>
+        </div>
+      </div>
+      
+      <!-- Medical AI Features -->
+      <div class="section-header">
+        <h2>🏥 Medical AI</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card premium" onclick="showSymptomChecker()">
+          <span class="feature-badge ai">AI</span>
+          <div class="feature-icon">🩺</div>
+          <h3>Symptom Checker</h3>
+          <p>AI-powered symptom analysis with possible conditions</p>
+        </div>
+        
+        <div class="feature-card premium" onclick="showMentalHealth()">
+          <div class="feature-icon">🧠</div>
+          <h3>Mental Health</h3>
+          <p>Depression screening (PHQ-9), stress & anxiety assessment</p>
+        </div>
+        
+        <div class="feature-card premium" onclick="showSleepAnalysis()">
+          <div class="feature-icon">💤</div>
+          <h3>Sleep Quality</h3>
+          <p>PSQI sleep analysis with personalized recommendations</p>
+        </div>
+        
+        <div class="feature-card premium" onclick="showNutritionAI()">
+          <div class="feature-icon">🥗</div>
+          <h3>Nutrition AI</h3>
+          <p>Diet analysis, calorie tracking, meal recommendations</p>
+        </div>
+      </div>
+      
+      <!-- Integrations -->
+      <div class="section-header">
+        <h2>⌚ Device Integration</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card" onclick="showWearableSync()">
+          <span class="feature-badge new">NEW</span>
+          <div class="feature-icon">⌚</div>
+          <h3>Smartwatch Sync</h3>
+          <p>Connect Apple Watch, Fitbit, Mi Band via Bluetooth</p>
+        </div>
+        
+        <div class="feature-card" onclick="showBluetoothDevices()">
+          <div class="feature-icon">📱</div>
+          <h3>Bluetooth Devices</h3>
+          <p>Heart rate monitors, blood pressure cuffs, glucometers</p>
+        </div>
+        
+        <div class="feature-card" onclick="showDataImport()">
+          <div class="feature-icon">📥</div>
+          <h3>Data Import</h3>
+          <p>Import health data from CSV, JSON, Apple Health</p>
+        </div>
+        
+        <div class="feature-card" onclick="showCloudBackup()">
+          <div class="feature-icon">☁️</div>
+          <h3>Cloud Backup</h3>
+          <p>Secure cloud synchronization & multi-device access</p>
+        </div>
+      </div>
+      
+      <!-- Settings & More -->
+      <div class="section-header">
+        <h2>⚙️ Settings & More</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card" onclick="window.location.href='/settings.html'">
+          <div class="feature-icon">⚙️</div>
+          <h3>Settings</h3>
+          <p>Preferences, goals, theme, notifications, privacy</p>
+        </div>
+        
+        <div class="feature-card" onclick="window.location.href='/about.html'">
+          <div class="feature-icon">ℹ️</div>
+          <h3>About</h3>
+          <p>Project info, team, technologies, documentation</p>
+        </div>
+        
+        <div class="feature-card" onclick="showExportOptions()">
+          <div class="feature-icon">📤</div>
+          <h3>Export Data</h3>
+          <p>Download health data as CSV, JSON, or PDF report</p>
+        </div>
+        
+        <div class="feature-card" onclick="showHelp()">
+          <div class="feature-icon">❓</div>
+          <h3>Help & Support</h3>
+          <p>Tutorials, FAQs, troubleshooting, contact support</p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Include all necessary scripts -->
+  <script type="module" src="assets/js/main.js"></script>
+  <script type="module" src="assets/js/storage.js"></script>
+  <script type="module" src="assets/js/dashboard.js"></script>
+  <script type="module" src="assets/js/auth.js"></script>
+  
+  <script>
+    // Feature navigation functions
+    function showAllAIFeatures() {
+      alert('All AI Features:\n\n1. AI Health Assistant (Chatbot)\n2. AI Camera Analysis\n3. 3D Body Visualization\n4. Disease Risk Prediction\n\nClick any card to explore!');
+    }
+    
+    function showDiseaseRisk() {
+      alert('Disease Risk AI:\n\nThis feature provides risk assessment for:\n- Cardiovascular disease (Framingham)\n- Type 2 Diabetes (ADA)\n- Hypertension\n\nNavigate to Doctor View for detailed analysis.');
+      window.location.href = 'doctor.html';
+    }
+    
+    function showHealthScore() {
+      alert('Your current health score is calculated based on:\n- Physical activity\n- Sleep quality\n- Nutrition\n- Mental wellness\n\nView detailed breakdown in Analytics.');
+    }
+    
+    function showMoodTracking() {
+      alert('Mood Tracking:\n\nLog your daily mood and see patterns over time. Available on the main dashboard.');
+    }
+    
+    function showSymptomChecker() {
+      alert('AI Symptom Checker:\n\nDescribe your symptoms to the AI Health Assistant chatbot for intelligent analysis.');
+      window.location.href = 'chatbot.html';
+    }
+    
+    function showMentalHealth() {
+      alert('Mental Health Screening:\n\nIncludes PHQ-9 depression scale and anxiety assessment. Navigate to Settings for full screening.');
+    }
+    
+    function showSleepAnalysis() {
+      alert('Sleep Quality Analysis:\n\nTrack sleep hours and quality. Get personalized recommendations based on PSQI.');
+    }
+    
+    function showNutritionAI() {
+      alert('Nutrition AI:\n\nTrack calories, macros, and get meal suggestions. Available in main dashboard data entry.');
+    }
+    
+    function showWearableSync() {
+      alert('Wearable Device Sync:\n\nConnect your smartwatch or fitness band via Bluetooth.\n\nSupported: Apple Watch, Fitbit, Mi Band, Samsung Galaxy Watch\n\nFeature available in Settings → Devices');
+    }
+    
+    function showBluetoothDevices() {
+      alert('Bluetooth Health Devices:\n\nConnect medical devices wirelessly:\n- Heart rate monitors\n- Blood pressure monitors\n- Glucometers\n- Pulse oximeters\n\nGo to Settings → Bluetooth Devices');
+    }
+    
+    function showDataImport() {
+      alert('Data Import:\n\nImport your health data from:\n- CSV files\n- JSON exports\n- Apple Health\n- Google Fit\n\nGo to Settings → Import/Export');
+      window.location.href = 'settings.html';
+    }
+    
+    function showCloudBackup() {
+      alert('Cloud Backup:\n\nSecurely backup your health data to cloud storage (feature placeholder).\n\nComing soon: Automatic sync across devices');
+    }
+    
+    function showExportOptions() {
+      alert('Export Your Data:\n\nDownload formats:\n- CSV (spreadsheet)\n- JSON (raw data)\n- PDF (formatted report)\n\nGo to Settings → Export Data');
+      window.location.href = 'settings.html';
+    }
+    
+    function showHelp() {
+      alert('Help & Support:\n\n📖 Documentation: README.md\n🎥 Video Tutorials: Available\n💬 Support: GitHub Issues\n📧 Contact: team@healthtracker.com');
+    }
+    
+    function openQuickAdd() {
+      // This would open the existing quick add modal
+      const fab = document.querySelector('.fab');
+      if (fab) fab.click();
+    }
+    
+    // Load user name on page load
+    window.addEventListener('load', () => {
+      // Wait a brief moment to ensure all modules are initialized
+      setTimeout(() => {
+        if (typeof AuthSystem !== 'undefined' && AuthSystem.isAuthenticated()) {
+          const user = AuthSystem.getCurrentUser();
+          if (user && user.profile && user.profile.name) {
+            const nameEl = document.getElementById('userName');
+            if (nameEl) nameEl.textContent = user.profile.name;
+          }
+        } else {
+          // Optional: Redirect to login if not authenticated
+          // window.location.href = 'index.html';
+          console.log('User not authenticated or AuthSystem not ready');
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>

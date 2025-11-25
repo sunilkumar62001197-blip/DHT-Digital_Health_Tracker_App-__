@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Health Vision - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- OpenCV.js -->
+  <script async src="https://docs.opencv.org/4.x/opencv.js" onload="console.log('OpenCV loaded')"></script>
+  
+  <!-- Three.js for 3D -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  
+<style>
+    .ai-vision-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      .ai-vision-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .camera-section {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(59, 130, 246, 0.1));
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .video-container {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    
+    #webcam {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    
+    #webcam.active {
+      display: block;
+    }
+    
+    #aiCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #fff;
+    }
+    
+    .ai-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .ai-stat {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .ai-stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #14b8a6;
+      margin: 0.5rem 0;
+    }
+    
+    .ai-stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .stress-meter {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    
+    .stress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+      transition: width 0.3s;
+    }
+    
+    .brain-3d-container {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 500px;
+      position: relative;
+    }
+    
+    #brain3D {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    
+    .ai-btn {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: 2px solid;
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(59, 130, 246, 0.2));
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    .ai-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(20, 184, 166, 0.3);
+    }
+    
+    .ai-btn.primary {
+      border-color: #14b8a6;
+    }
+    
+    .ai-btn.secondary {
+      border-color: #8b5cf6;
+    }
+    
+    .ai-btn.danger {
+      border-color: #ef4444;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .feature-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-indicator.active {
+      background: #22c55e;
+    }
+    
+    .status-indicator.inactive {
+      background: #64748b;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="body-insights.html" class="nav-link">Body Insights</a></li>
+        <li><a href="ai-vision.html" class="nav-link active">AI Vision</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link">Settings</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <div class="content-section">
+        <h1>🤖 AI Health Vision - Computer Vision Analysis</h1>
+        <p style="color: var(--text-secondary);">Advanced AI-powered health monitoring using your camera and cutting-edge 3D visualizations</p>
+      </div>
+      
+      <div class="ai-vision-container">
+        <!-- Camera AI Analysis -->
+        <div class="camera-section">
+          <h2>📹 Live AI Camera Analysis</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Enable your camera for real-time health monitoring</p>
+          
+          <div class="video-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="aiCanvas"></canvas>
+            <div class="placeholder" id="cameraPlaceholder">
+              <div style="font-size: 4rem; margin-bottom: 1rem;">📷</div>
+              <p>Click "Enable Camera" to start</p>
+            </div>
+          </div>
+          
+          <div class="ai-stats">
+            <div class="ai-stat">
+              <div class="ai-stat-label">😰 Stress Level</div>
+              <div class="ai-stat-value" id="stressLevel">0</div>
+              <div class="stress-meter">
+                <div class="stress-fill" id="stressFill" style="width: 0%"></div>
+              </div>
+            </div>
+            
+            <div class="ai-stat">
+              <div class="ai-stat-label">🧘 Posture Score</div>
+              <div class="ai-stat-value" id="postureScore">100</div>
+              <small style="color: var(--success);">Excellent</small>
+            </div>
+            
+            <div class="ai-stat">
+              <div class="ai-stat-label">😴 Fatigue Level</div>
+              <div class="ai-stat-value" id="fatigueLevel">0</div>
+              <small style="color: var(--text-tertiary);">Alert</small>
+            </div>
+          </div>
+          
+          <div class="controls">
+            <button class="ai-btn primary" id="enableCamera">
+              <span class="status-indicator inactive" id="cameraStatus"></span>
+              Enable Camera
+            </button>
+            <button class="ai-btn secondary" id="captureSnapshot">📸 Capture</button>
+            <button class="ai-btn danger" id="stopCamera" style="display: none;">⏹️ Stop</button>
+          </div>
+        </div>
+        
+        <!-- 3D Brain Visualization -->
+        <div class="brain-3d-container">
+          <h2>🧠 3D Brain & Neuron Network</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Interactive 3D visualization of brain activity</p>
+          
+          <div id="brain3D"></div>
+          
+          <div class="controls">
+            <button class="ai-btn primary" onclick="triggerBrainActivity()">⚡ Fire Neurons</button>
+            <button class="ai-btn secondary" onclick="toggleRotation()">🔄 Toggle Rotation</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Advanced Features Grid -->
+      <div class="content-section">
+        <h2>✨ AI-Powered Features</h2>
+      </div>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👁️</div>
+          <h3>Face Detection</h3>
+          <p>Real-time facial recognition and tracking using OpenCV</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">😰</div>
+          <h3>Stress Analysis</h3>
+          <p>Analyze facial expressions to detect stress levels</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🧘</div>
+          <h3>Posture Detection</h3>
+          <p>Monitor and improve your sitting/standing posture</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">😴</div>
+          <h3>Fatigue Monitor</h3>
+          <p>Eye tracking to detect tiredness and alert you</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🫀</div>
+          <h3>Heart Rate Detection</h3>
+          <p>Estimate heart rate from facial blood flow (rPPG)</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Neural Network</h3>
+          <p>3D visualization of firing neurons and synapses</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🧬</div>
+          <h3>DNA Visualization</h3>
+          <p>Animated double helix showing genetic health</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Predictions</h3>
+          <p>Machine learning health forecasts and insights</p>
+        </div>
+      </div>
+      
+      <div class="insight-card" style="margin-top: 2rem;">
+        <h3>🔒 Privacy & Security</h3>
+        <p><strong>Your privacy is our priority:</strong></p>
+        <ul>
+          <li>✅ All AI processing done locally in your browser</li>
+          <li>✅ No video or images uploaded to any server</li>
+          <li>✅ Camera can be disabled anytime</li>
+          <li>✅ Data stays on your device</li>
+          <li>✅ Open source - verify the code yourself!</li>
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/vision-ai.js"></script>
+  <script src="assets/js/3d-visualizer.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    let visionAI;
+    let visualizer3D;
+    let cameraActive = false;
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Initialize AI Vision
+      visionAI = new HealthVisionAI();
+      await visionAI.init();
+      
+      // Initialize 3D Visualizer
+      visualizer3D = new Advanced3DVisualizer('brain3D');
+      if (visualizer3D.init()) {
+        visualizer3D.createBrain();
+        visualizer3D.createDNAHelix();
+        visualizer3D.createBloodCells();
+        visualizer3D.start();
+      }
+      
+      // Setup event listeners
+      setupEventListeners();
+    });
+    
+    function setupEventListeners() {
+      // Camera controls
+      document.getElementById('enableCamera').addEventListener('click', async () => {
+        const success = await visionAI.startCamera('webcam', 'aiCanvas');
+        if (success) {
+          document.getElementById('webcam').classList.add('active');
+          document.getElementById('cameraPlaceholder').style.display = 'none';
+          document.getElementById('enableCamera').style.display = 'none';
+          document.getElementById('stopCamera').style.display = 'block';
+          document.getElementById('cameraStatus').classList.remove('inactive');
+          document.getElementById('cameraStatus').classList.add('active');
+          cameraActive = true;
+          App.showToast('📹 Camera enabled! AI analysis started', 'success');
+        } else {
+          App.showToast('❌ Camera access denied', 'error');
+        }
+      });
+      
+      document.getElementById('stopCamera').addEventListener('click', () => {
+        visionAI.stopCamera();
+        document.getElementById('webcam').classList.remove('active');
+        document.getElementById('cameraPlaceholder').style.display = 'block';
+        document.getElementById('enableCamera').style.display = 'block';
+        document.getElementById('stopCamera').style.display = 'none';
+        document.getElementById('cameraStatus').classList.remove('active');
+        document.getElementById('cameraStatus').classList.add('inactive');
+        cameraActive = false;
+        App.showToast('⏹️ Camera stopped', 'info');
+      });
+      
+      document.getElementById('captureSnapshot').addEventListener('click', () => {
+        if (cameraActive) {
+          const canvas = document.getElementById('aiCanvas');
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `health-snapshot-${Date.now()}.png`;
+            a.click();
+            App.showToast('📸 Snapshot captured!', 'success');
+          });
+        } else {
+          App.showToast('⚠️ Enable camera first', 'warning');
+        }
+      });
+      
+      // Listen to AI updates
+      window.addEventListener('stressUpdate', (e) => {
+        const level = e.detail.level;
+        document.getElementById('stressLevel').textContent = level;
+        document.getElementById('stressFill').style.width = level + '%';
+      });
+      
+      window.addEventListener('postureUpdate', (e) => {
+        const score = e.detail.score;
+        document.getElementById('postureScore').textContent = score;
+      });
+      
+      window.addEventListener('fatigueUpdate', (e) => {
+        const level = e.detail.level;
+        document.getElementById('fatigueLevel').textContent = level;
+      });
+    }
+    
+    function triggerBrainActivity() {
+      if (visualizer3D && visualizer3D.neurons.length > 0) {
+        // Fire multiple random neurons
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const idx = Math.floor(Math.random() * visualizer3D.neurons.length);
+            visualizer3D.fireNeuron(idx);
+          }, i * 200);
+        }
+        App.showToast('⚡ Neural activity triggered!', 'success');
+      }
+    }
+    
+    let rotationPaused = false;
+    function toggleRotation() {
+      rotationPaused = !rotationPaused;
+      if (rotationPaused && visualizer3D) {
+        visualizer3D.stop();
+        App.showToast(' Rotation paused', 'info');
+      } else if (visualizer3D) {
+        visualizer3D.start();
+        App.showToast('🔄 Rotation resumed', 'info');
+      }
+    }
+    
+    // Cleanup on unload
+    window.addEventListener('beforeunload', () => {
+      if (visionAI) {
+        visionAI.stopCamera();
+      }
+      if (visualizer3D) {
+        visualizer3D.dispose();
+      }
+    });
+  </script>
+</body>
+</html>

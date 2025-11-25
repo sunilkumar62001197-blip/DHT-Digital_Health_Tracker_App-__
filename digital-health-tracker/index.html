@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Digital Health Tracker - Track your daily health metrics and achieve wellness goals">
+  <meta name="theme-color" content="#14b8a6">
+  
+  <title>Welcome - Digital Health Tracker</title>
+  
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icon-72x72.png">
+  <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <!-- Login Screen -->
+      <div id="loginScreen" class="content-section" style="max-width: 480px; margin-left: auto; margin-right: auto;">
+        <div class="text-center mb-3">
+          <h1 class="nav-brand" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏥 Health Tracker</h1>
+          <p style="color: var(--text-secondary); font-size: 1.1rem;">Your personal wellness companion</p>
+        </div>
+        
+        <div class="card" style="margin-top: 2rem;">
+          <h2>Welcome Back!</h2>
+          <p>Track, analyze, and improve your health metrics every day.</p>
+          
+          <form id="loginForm" style="margin-top: 2rem;">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">Email Address</label>
+              <input type="email" id="loginEmail" class="form-input" placeholder="your.email@example.com" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+              Continue
+            </button>
+          </form>
+          
+          <div style="text-align: center; margin-top: 1.5rem;">
+            <p style="color: var(--text-tertiary); font-size: 0.875rem;">
+              New here? 
+              <a href="#" id="showOnboardingBtn" style="color: var(--primary-color); font-weight: 600;">Get started</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Onboarding Screen -->
+      <div id="onboardingScreen" class="hidden" style="max-width: 720px; margin-left: auto; margin-right: auto;">
+        
+        <!-- Stepper -->
+        <div class="stepper">
+          <div class="step" data-step="1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Profile</span>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Goals</span>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Preferences</span>
+          </div>
+        </div>
+        
+        <!-- Step 1: Profile -->
+        <div id="step1" class="onboarding-step">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Let's get to know you</h2>
+              <p class="card-subtitle">Tell us a bit about yourself to personalize your experience</p>
+            </div>
+            
+            <div class="card-body">
+              <form id="profileForm">
+                <div class="grid grid-cols-2">
+                  <div class="form-group">
+                    <label class="form-label" for="userName">Full Name *</label>
+                    <input type="text" id="userName" class="form-input" placeholder="John Doe" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label" for="userEmail">Email *</label>
+                    <input type="email" id="userEmail" class="form-input" placeholder="john@example.com" required>
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-3">
+                  <div class="form-group">
+                    <label class="form-label" for="userAge">Age</label>
+                    <input type="number" id="userAge" class="form-input" placeholder="28" min="1" max="120">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label" for="userHeight">Height (cm)</label>
+                    <input type="number" id="userHeight" class="form-input" placeholder="170">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label" for="userWeight">Weight (kg)</label>
+                    <input type="number" id="userWeight" class="form-input" placeholder="70">
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary btn-lg" onclick="nextStep(2)" style="width: 100%; margin-top: 1rem;">
+                  Continue →
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 2: Goals -->
+        <div id="step2" class="onboarding-step hidden">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Set your daily goals</h2>
+              <p class="card-subtitle">These targets will help track your progress</p>
+            </div>
+            
+            <div class="card-body">
+              <form id="goalsForm">
+                <div class="form-group">
+                  <label class="form-label" for="goalSteps">Daily Steps Goal</label>
+                  <input type="number" id="goalSteps" class="form-input" value="10000" min="1000">
+                  <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Recommended: 10,000 steps/day</p>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="goalSleep">Sleep Goal (hours)</label>
+                  <input type="number" id="goalSleep" class="form-input" value="8" min="4" max="12" step="0.5">
+                  <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Recommended: 7-9 hours/night</p>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="goalWater">Water Intake Goal (glasses)</label>
+                  <input type="number" id="goalWater" class="form-input" value="8" min="1">
+                  <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Recommended: 8 glasses/day</p>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="goalCalories">Daily Calories Goal</label>
+                  <input type="number" id="goalCalories" class="form-input" value="2000" min="1000">
+                  <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Adjust based on your activity level</p>
+                </div>
+                
+                <div class="flex gap-2" style="margin-top: 1.5rem;">
+                  <button type="button" class="btn btn-secondary" onclick="prevStep(1)" style="flex: 1;">
+                    ← Back
+                  </button>
+                  <button type="button" class="btn btn-primary btn-lg" onclick="nextStep(3)" style="flex: 1;">
+                    Continue →
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 3: Preferences -->
+        <div id="step3" class="onboarding-step hidden">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Customize your experience</h2>
+              <p class="card-subtitle">Set up notifications and preferences</p>
+            </div>
+            
+            <div class="card-body">
+              <form id="preferencesForm">
+                <div class="form-group">
+                  <label class="form-label">Theme</label>
+                  <div class="flex gap-2">
+                    <button type="button" class="btn btn-outline" onclick="selectTheme('light')" id="lightThemeBtn" style="flex: 1;">
+                      ☀️ Light
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="selectTheme('dark')" id="darkThemeBtn" style="flex: 1;">
+                      🌙 Dark
+                    </button>
+                  </div>
+                </div>
+              </form>
+              
+              <div class="form-group">
+                  <label class="form-label" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>Enable Daily Reminders</span>
+                    <input type="checkbox" id="enableNotifications" checked style="width: auto; height: 20px;">
+                  </label>
+                  <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Get reminded to log your health data</p>
+                </div>
+                
+                <div class="form-group" id="reminderTimeGroup">
+                  <label class="form-label" for="reminderTime">Reminder Time</label>
+                  <input type="time" id="reminderTime" class="form-input" value="09:00">
+                </div>
+                
+                <div class="flex gap-2" style="margin-top: 1.5rem;">
+                  <button type="button" class="btn btn-secondary" onclick="prevStep(2)" style="flex: 1;">
+                    ← Back
+                  </button>
+                  <button type="button" class="btn btn-primary btn-lg" id="completeSetupBtn" style="flex: 1;">
+                    Complete Setup 🎉
+                  </button>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    // Onboarding state
+    let currentStep = 1;
+    let selectedTheme = 'light';
+    
+    // Check if user is already onboarded
+    window.addEventListener('DOMContentLoaded', () => {
+      // Ensure AuthSystem is available
+      if (typeof AuthSystem === 'undefined') {
+        console.error('AuthSystem not loaded');
+        return;
+      }
+      
+      const user = AuthSystem.getCurrentUser();
+      if (user) {
+        // User is onboarded, go to dashboard
+        window.location.href = 'dashboard.html';
+      }
+    });
+    
+    // Show onboarding
+    document.getElementById('showOnboardingBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('onboardingScreen').classList.remove('hidden');
+      updateStepperUI(1);
+    });
+    
+    // Login form handler
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      
+      if (!App.validateEmail(email)) {
+        App.showToast('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      const result = AuthSystem.login(email, 'Student@123'); // Demo password for now, or check existence
+      // Actually for the login form we should just check if user exists or try to login
+      // But since we don't have a password field in the initial form (it's a simplified flow), 
+      // let's just check if user exists.
+      
+      const user = AuthSystem.getUserByEmail(email);
+      
+      if (user) {
+        // Login successful (skipping password for this simple flow or assuming auto-login)
+        AuthSystem.createSession(user);
+        window.location.href = 'dashboard.html';
+      } else {
+        // Show onboarding
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('onboardingScreen').classList.remove('hidden');
+        document.getElementById('userEmail').value = email;
+        updateStepperUI(1);
+      }
+    });
+    
+    // Step navigation
+    function nextStep(step) {
+      if (step === 2) {
+        // Validate profile form
+        const name = document.getElementById('userName').value;
+        const email = document.getElementById('userEmail').value;
+        
+        if (!name || !email) {
+          App.showToast('Please fill in required fields', 'error');
+          return;
+        }
+        
+        if (!App.validateEmail(email)) {
+          App.showToast('Please enter a valid email address', 'error');
+          return;
+        }
+      }
+      
+      currentStep = step;
+      updateStepperUI(step);
+      
+      // Hide all steps
+      document.querySelectorAll('.onboarding-step').forEach(s => s.classList.add('hidden'));
+      // Show current step
+      document.getElementById(`step${step}`).classList.remove('hidden');
+    }
+    
+    function prevStep(step) {
+      currentStep = step;
+      updateStepperUI(step);
+      
+      // Hide all steps
+      document.querySelectorAll('.onboarding-step').forEach(s => s.classList.add('hidden'));
+      // Show current step
+      document.getElementById(`step${step}`).classList.remove('hidden');
+    }
+    
+    function updateStepperUI(activeStep) {
+      document.querySelectorAll('.step').forEach((step, index) => {
+        const stepNum = index + 1;
+        step.classList.remove('active', 'completed');
+        
+        if (stepNum === activeStep) {
+          step.classList.add('active');
+        } else if (stepNum < activeStep) {
+          step.classList.add('completed');
+        }
+      });
+    }
+    
+    // Theme selection
+    function selectTheme(theme) {
+      selectedTheme = theme;
+      document.getElementById('lightThemeBtn').classList.remove('btn-primary');
+      document.getElementById('darkThemeBtn').classList.remove('btn-primary');
+      
+      if (theme === 'light') {
+        document.getElementById('lightThemeBtn').classList.add('btn-primary');
+      } else {
+        document.getElementById('darkThemeBtn').classList.add('btn-primary');
+      }
+      
+      // Apply theme immediately
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    
+    // Toggle reminder time visibility
+    document.getElementById('enableNotifications').addEventListener('change', (e) => {
+      const reminderTimeGroup = document.getElementById('reminderTimeGroup');
+      if (e.target.checked) {
+        reminderTimeGroup.style.display = 'block';
+      } else {
+        reminderTimeGroup.style.display = 'none';
+      }
+    });
+    
+    // Complete onboarding
+    document.getElementById('completeSetupBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      // Gather all data
+      const profile = {
+        name: document.getElementById('userName').value,
+        age: parseInt(document.getElementById('userAge').value) || null,
+        height: parseInt(document.getElementById('userHeight').value) || null,
+        weight: parseInt(document.getElementById('userWeight').value) || null,
+        joinedDate: App.getTodayDate()
+      };
+      
+      const email = document.getElementById('userEmail').value;
+      const password = 'User@123'; // Default password for new users
+      
+      const goals = {
+        steps: parseInt(document.getElementById('goalSteps').value),
+        sleep: parseFloat(document.getElementById('goalSleep').value),
+        water: parseInt(document.getElementById('goalWater').value),
+        calories: parseInt(document.getElementById('goalCalories').value),
+        heartRate: { min: 60, max: 100 }
+      };
+      
+      const preferences = {
+        theme: selectedTheme,
+        notifications: document.getElementById('enableNotifications').checked,
+        reminderTime: document.getElementById('reminderTime').value
+      };
+      
+      // Register user
+      const result = AuthSystem.register(email, password, profile);
+      
+      if (result.success) {
+        // Login
+        AuthSystem.login(email, password);
+        
+        // Update extra data
+        const user = AuthSystem.getCurrentUser();
+        AuthSystem.updateProfile(user.id, { goals, preferences });
+        
+        // Request notification permission if enabled
+        if (preferences.notifications) {
+          await NotificationManager.requestPermission();
+          NotificationManager.scheduleDailyReminder(preferences.reminderTime);
+        }
+        
+        // Show success message
+        App.showToast('Welcome to Digital Health Tracker! 🎉', 'success');
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } else {
+        App.showToast(result.error || 'Registration failed', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

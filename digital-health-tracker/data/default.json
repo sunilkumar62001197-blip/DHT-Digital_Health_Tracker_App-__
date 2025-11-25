@@ -1,0 +1,94 @@
+{
+  "user": {
+    "name": "Alex Johnson",
+    "email": "alex.johnson@example.com",
+    "age": 28,
+    "height": 170,
+    "weight": 70,
+    "joinedDate": "2025-11-01"
+  },
+  "goals": {
+    "steps": 10000,
+    "water": 8,
+    "sleep": 8,
+    "calories": 2000,
+    "heartRate": { "min": 60, "max": 100 }
+  },
+  "settings": {
+    "theme": "light",
+    "notifications": true,
+    "reminderTime": "09:00"
+  },
+  "entries": [
+    {
+      "date": "2025-11-18",
+      "steps": 8500,
+      "heartRate": 72,
+      "sleep": 7.5,
+      "water": 7,
+      "calories": 1950,
+      "mood": "happy",
+      "notes": "Great workout session"
+    },
+    {
+      "date": "2025-11-19",
+      "steps": 12000,
+      "heartRate": 75,
+      "sleep": 8,
+      "water": 8,
+      "calories": 2100,
+      "mood": "energetic",
+      "notes": "Productive day"
+    },
+    {
+      "date": "2025-11-20",
+      "steps": 6000,
+      "heartRate": 68,
+      "sleep": 5.5,
+      "water": 5,
+      "calories": 1800,
+      "mood": "tired",
+      "notes": "Late night work"
+    },
+    {
+      "date": "2025-11-21",
+      "steps": 9500,
+      "heartRate": 70,
+      "sleep": 7,
+      "water": 6,
+      "calories": 1900,
+      "mood": "neutral",
+      "notes": "Regular day"
+    },
+    {
+      "date": "2025-11-22",
+      "steps": 11000,
+      "heartRate": 73,
+      "sleep": 8.5,
+      "water": 9,
+      "calories": 2050,
+      "mood": "happy",
+      "notes": "Long walk in the park"
+    },
+    {
+      "date": "2025-11-23",
+      "steps": 7500,
+      "heartRate": 71,
+      "sleep": 6.5,
+      "water": 7,
+      "calories": 1850,
+      "mood": "neutral",
+      "notes": "Work from home"
+    },
+    {
+      "date": "2025-11-24",
+      "steps": 10500,
+      "heartRate": 74,
+      "sleep": 7.5,
+      "water": 8,
+      "calories": 2000,
+      "mood": "happy",
+      "notes": "Feeling great!"
+    }
+  ]
+}

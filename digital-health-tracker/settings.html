@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Settings - Preferences and Data Management">
+  <meta name="theme-color" content="#14b8a6">
+  
+  <title>Settings - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icon-72x72.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="summary.html" class="nav-link">Summary</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link active">Settings</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <div class="content-section">
+        <h1>⚙️ Settings</h1>
+        <p style="color: var(--text-secondary);">Manage your preferences and data</p>
+      </div>
+      
+      <!-- Profile Settings -->
+      <div class="content-section">
+        <h2>👤 Profile Information</h2>
+        <form id="profileForm">
+          <div class="grid grid-cols-2">
+            <div class="form-group">
+              <label class="form-label" for="settingsName">Full Name</label>
+              <input type="text" id="settingsName" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsEmail">Email</label>
+              <input type="email" id="settingsEmail" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsAge">Age</label>
+              <input type="number" id="settingsAge" class="form-input" min="1">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsHeight">Height (cm)</label>
+              <input type="number" id="settingsHeight" class="form-input" min="1">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsWeight">Weight (kg)</label>
+              <input type="number" id="settingsWeight" class="form-input" min="1">
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </form>
+      </div>
+      
+      <!-- Goals Settings -->
+      <div class="content-section">
+        <h2>🎯 Daily Goals</h2>
+        <form id="goalsForm">
+          <div class="grid grid-cols-2">
+            <div class="form-group">
+              <label class="form-label" for="settingsStepsGoal">Steps Goal</label>
+              <input type="number" id="settingsStepsGoal" class="form-input" min="1000">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsSleepGoal">Sleep Goal (hours)</label>
+              <input type="number" id="settingsSleepGoal" class="form-input" min="4" max="12" step="0.5">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsWaterGoal">Water Goal (glasses)</label>
+              <input type="number" id="settingsWaterGoal" class="form-input" min="1">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsCaloriesGoal">Calories Goal</label>
+              <input type="number" id="settingsCaloriesGoal" class="form-input" min="1000">
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Save Goals</button>
+        </form>
+      </div>
+      
+      <!-- App Preferences -->
+      <div class="content-section">
+        <h2>🎨 App Preferences</h2>
+        <form id="preferencesForm">
+          <div class="form-group">
+            <label class="form-label">Theme</label>
+            <div class="flex gap-1">
+              <button type="button" class="btn btn-outline" id="lightBtn" onclick="selectTheme('light')">☀️ Light</button>
+              <button type="button" class="btn btn-outline" id="darkBtn" onclick="selectTheme('dark')">🌙 Dark</button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Enable Daily Reminders</span>
+              <input type="checkbox" id="settingsNotifications" style="width: auto; height: 20px;">
+            </label>
+            <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Receive browser notifications to log your health data</p>
+          </div>
+          
+          <div class="form-group" id="reminderTimeGroup">
+            <label class="form-label" for="settingsReminderTime">Reminder Time</label>
+            <input type="time" id="settingsReminderTime" class="form-input">
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Save Preferences</button>
+        </form>
+      </div>
+      
+      <!-- Data Management -->
+      <div class="content-section">
+        <h2>💾 Data Management</h2>
+        
+        <div style="margin-bottom: 2rem;">
+          <h3>Export Data</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Download your health data in various formats</p>
+          <div class="flex gap-1">
+            <button class="btn btn-outline" onclick="exportJSON()">📄 Export JSON</button>
+            <button class="btn btn-outline" onclick="exportCSV()">📊 Export CSV</button>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+          <h3>Import Data</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Restore your health data from a JSON backup</p>
+          <input type="file" id="importFile" accept=".json" style="display: none;">
+          <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">📥 Import JSON</button>
+        </div>
+        
+        <div style="border-top: 2px solid var(--border-color); padding-top: 2rem;">
+          <h3 style="color: var(--danger-color);">Danger Zone</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Permanently delete all your data. This cannot be undone!</p>
+          <button class="btn" style="background: var(--danger-color); color: white;" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/export.js"></script>
+  <script src="assets/js/notifications.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    let selectedTheme = 'light';
+    
+    function initSettings() {
+      // Load current settings
+      const user = StorageManager.getUserProfile();
+      const goals = StorageManager.getGoals();
+      const settings = StorageManager.getSettings();
+      
+      // Populate profile form
+      document.getElementById('settingsName').value = user.name || '';
+      document.getElementById('settingsEmail').value = user.email || '';
+      document.getElementById('settingsAge').value = user.age || '';
+      document.getElementById('settingsHeight').value = user.height || '';
+      document.getElementById('settingsWeight').value = user.weight || '';
+      
+      // Populate goals form
+      document.getElementById('settingsStepsGoal').value = goals.steps || 10000;
+      document.getElementById('settingsSleepGoal').value = goals.sleep || 8;
+      document.getElementById('settingsWaterGoal').value = goals.water || 8;
+      document.getElementById('settingsCaloriesGoal').value = goals.calories || 2000;
+      
+      // Populate preferences
+      selectedTheme = settings.theme || 'light';
+      updateThemeButtons();
+      document.getElementById('settingsNotifications').checked = settings.notifications || false;
+      document.getElementById('settingsReminderTime').value = settings.reminderTime || '09:00';
+      
+      toggleReminderTime();
+    }
+    
+    function selectTheme(theme) {
+      selectedTheme = theme;
+      updateThemeButtons();
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    
+    function updateThemeButtons() {
+      document.getElementById('lightBtn').className = selectedTheme === 'light' ? 'btn btn-primary' : 'btn btn-outline';
+      document.getElementById('darkBtn').className = selectedTheme === 'dark' ? 'btn btn-primary' : 'btn btn-outline';
+    }
+    
+    function toggleReminderTime() {
+      const enabled = document.getElementById('settingsNotifications').checked;
+      document.getElementById('reminderTimeGroup').style.display = enabled ? 'block' : 'none';
+    }
+    
+    document.getElementById('settingsNotifications').addEventListener('change', toggleReminderTime);
+    
+    // Save profile
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const userData = {
+        name: document.getElementById('settingsName').value,
+        email: document.getElementById('settingsEmail').value,
+        age: parseInt(document.getElementById('settingsAge').value) || null,
+        height: parseInt(document.getElementById('settingsHeight').value) || null,
+        weight: parseInt(document.getElementById('settingsWeight').value) || null
+      };
+      
+      StorageManager.updateUserProfile(userData);
+      App.showToast('Profile updated successfully! ✅', 'success');
+    });
+    
+    // Save goals
+    document.getElementById('goalsForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const goals = {
+        steps: parseInt(document.getElementById('settingsStepsGoal').value),
+        sleep: parseFloat(document.getElementById('settingsSleepGoal').value),
+        water: parseInt(document.getElementById('settingsWaterGoal').value),
+        calories: parseInt(document.getElementById('settingsCaloriesGoal').value),
+        heartRate: { min: 60, max: 100 }
+      };
+      
+      StorageManager.updateGoals(goals);
+      App.showToast('Goals updated successfully! 🎯', 'success');
+    });
+    
+    // Save preferences
+    document.getElementById('preferencesForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const settings = {
+        theme: selectedTheme,
+        notifications: document.getElementById('settingsNotifications').checked,
+        reminderTime: document.getElementById('settingsReminderTime').value
+      };
+      
+      StorageManager.updateSettings(settings);
+      
+      // Request notification permission if enabled
+      if (settings.notifications) {
+        const granted = await NotificationManager.requestPermission();
+        if (granted) {
+          NotificationManager.scheduleDailyReminder(settings.reminderTime);
+        }
+      }
+      
+      App.showToast('Preferences saved successfully! ⚙️', 'success');
+    });
+    
+    // Export JSON
+    function exportJSON() {
+      const data = StorageManager.getAll();
+      ExportManager.downloadJSON(data);
+      App.showToast('Data exported as JSON! 📄', 'success');
+    }
+    
+    // Export CSV
+    function exportCSV() {
+      const entries = StorageManager.getEntries();
+      ExportManager.downloadCSV(entries);
+      App.showToast('Data exported as CSV! 📊', 'success');
+    }
+    
+    // Import JSON
+    document.getElementById('importFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const result = StorageManager.importJSON(event.target.result);
+          if (result.success) {
+            App.showToast('Data imported successfully! 📥', 'success');
+            setTimeout(() => location.reload(), 1000);
+          } else {
+            App.showToast(`Import failed: ${result.message}`, 'error');
+          }
+        } catch (error) {
+          App.showToast('Failed to import data. Invalid file format.', 'error');
+        }
+      };
+      reader.readAsText(file);
+      
+      // Reset input
+      e.target.value = '';
+    });
+    
+    // Clear all data
+    function clearAllData() {
+      if (confirm('⚠️ WARNING: This will permanently delete ALL your health data. This cannot be undone!\n\nAre you absolutely sure?')) {
+        if (confirm('This is your last chance. Delete everything?')) {
+          StorageManager.clearAll();
+          App.showToast('All data cleared. Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        }
+      }
+    }
+    
+    window.addEventListener('DOMContentLoaded', initSettings);
+  </script>
+</body>
+</html>

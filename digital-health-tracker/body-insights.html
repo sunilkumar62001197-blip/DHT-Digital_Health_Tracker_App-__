@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Advanced Health Visualization - See your body's internal workings">
+  <title>Body Insights - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icon-72x72.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    .visualization-container {
+      position: relative;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      overflow: hidden;
+    }
+    
+    .viz-canvas {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.5);
+    }
+    
+    .body-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .stat-card-advanced {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card-advanced::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #14b8a6, #3b82f6);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    .stat-icon-advanced {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 10px currentColor);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .organ-map {
+      position: relative;
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    
+    .organ-hotspot {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.3);
+      border: 2px solid #ef4444;
+      cursor: pointer;
+      transition: all 0.3s;
+      animation: pulse-spot 2s infinite;
+    }
+    
+    .organ-hotspot:hover {
+      transform: scale(1.2);
+      background: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+    
+    @keyframes pulse-spot {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    }
+    
+    .health-wave {
+      width: 100%;
+      height: 60px;
+      margin: 1rem 0;
+    }
+    
+    .controls-panel {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    
+    .control-btn {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      border: 2px solid #14b8a6;
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(59, 130, 246, 0.2));
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .control-btn:hover {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.4), rgba(59, 130, 246, 0.4));
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(20, 184, 166, 0.3);
+    }
+    
+    .insight-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(239, 68, 68, 0.1));
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border-left: 4px solid #8b5cf6;
+    }
+
+    /* Carousel Styles */
+    .carousel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .viz-slide {
+      display: none;
+      animation: fadeEffect 1s;
+    }
+
+    .viz-slide.active {
+      display: block;
+    }
+
+    @keyframes fadeEffect {
+      from {opacity: 0.4} 
+      to {opacity: 1}
+    }
+
+    .slide-controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-btn.prev { left: 10px; }
+    .nav-btn.next { right: 10px; }
+
+    .slide-indicators {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .indicator {
+      height: 10px;
+      width: 10px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .indicator.active {
+      background-color: #14b8a6;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="summary.html" class="nav-link">Summary</a></li>
+        <li><a href="body-insights.html" class="nav-link active">Body Insights</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link">Settings</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <div class="content-section">
+        <h1>🧬 Body Insights - Internal Health Visualization</h1>
+        <p style="color: var(--text-secondary);">Watch your body's internal processes in real-time with advanced animations</p>
+      </div>
+      
+      <!-- Main Visualization Carousel -->
+      <div class="visualization-container">
+        <div class="carousel-header">
+          <h2 style="color: white; margin-bottom: 1rem;" id="vizTitle">🫀 Live Heart Activity</h2>
+          <div class="slide-indicators">
+            <span class="indicator active" onclick="switchSlide(0)"></span>
+            <span class="indicator" onclick="switchSlide(1)"></span>
+            <span class="indicator" onclick="switchSlide(2)"></span>
+          </div>
+        </div>
+        
+        <div class="carousel-track" id="vizTrack">
+          <!-- Slide 1: Heart -->
+          <div class="viz-slide active" id="slide-heart">
+            <canvas id="heartCanvas" class="viz-canvas"></canvas>
+            <div class="slide-controls">
+              <button class="control-btn" onclick="triggerHeartbeat()">💗 Simulate Heartbeat</button>
+              <button class="control-btn" onclick="addBloodFlow()">🩸 Boost Blood Flow</button>
+            </div>
+          </div>
+          
+          <!-- Slide 2: Brain -->
+          <div class="viz-slide" id="slide-brain">
+            <canvas id="brainCanvas" class="viz-canvas"></canvas>
+            <div class="slide-controls">
+              <button class="control-btn" onclick="triggerBrainActivity()">🧠 Activate Neurons</button>
+              <button class="control-btn" onclick="showOxygenation()">⚡ Synapse Fire</button>
+            </div>
+          </div>
+          
+          <!-- Slide 3: Full Body -->
+          <div class="viz-slide" id="slide-body">
+            <canvas id="bodyCanvas" class="viz-canvas"></canvas>
+            <div class="slide-controls">
+              <button class="control-btn" onclick="scanBody()">🔍 Full Body Scan</button>
+              <button class="control-btn" onclick="showVitals()">📊 Show Vitals</button>
+            </div>
+          </div>
+        </div>
+        
+        <button class="nav-btn prev" onclick="prevSlide()">&#10094;</button>
+        <button class="nav-btn next" onclick="nextSlide()">&#10095;</button>
+      </div>
+      
+      <!-- Real-time Stats -->
+      <div class="body-stats-grid">
+        <div class="stat-card-advanced">
+          <div class="stat-icon-advanced">❤️</div>
+          <h3>Heart Activity</h3>
+          <div class="stat-value" id="currentHeartRate">75</div>
+          <div class="stat-label">Beats Per Minute</div>
+          <canvas id="heartWave" class="health-wave"></canvas>
+        </div>
+        
+        <div class="stat-card-advanced">
+          <div class="stat-icon-advanced">🧠</div>
+          <h3>Brain Activity</h3>
+          <div class="stat-value" id="brainActivity">Active</div>
+          <div class="stat-label">Neural Signals</div>
+          <canvas id="brainWave" class="health-wave"></canvas>
+        </div>
+        
+        <div class="stat-card-advanced">
+          <div class="stat-icon-advanced">🫁</div>
+          <h3>Oxygen Level</h3>
+          <div class="stat-value" id="oxygenLevel">98%</div>
+          <div class="stat-label">Blood Oxygen</div>
+          <canvas id="oxygenWave" class="health-wave"></canvas>
+        </div>
+        
+        <div class="stat-card-advanced">
+          <div class="stat-icon-advanced">🔥</div>
+          <h3>Metabolism</h3>
+          <div class="stat-value" id="metabolismRate">Normal</div>
+          <div class="stat-label">Energy Burn Rate</div>
+          <canvas id="metabolismWave" class="health-wave"></canvas>
+        </div>
+      </div>
+      
+      <!-- AI-Powered Insights -->
+      <div class="insight-card">
+        <h3>🤖 AI Health Insights</h3>
+        <div id="aiInsights">
+          <p><strong>✨ Based on your health data:</strong></p>
+          <ul>
+            <li>Your heart rate variability indicates good cardiovascular health</li>
+            <li>Brain activity patterns show optimal cognitive function</li>
+            <li>Oxygen saturation is excellent - your breathing exercises are working!</li>
+            <li>Metabolism is steady - continue your current diet and exercise routine</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Interactive Body Map -->
+      <div class="content-section">
+        <h2>🎯 Interactive Body Map</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Click on different body parts to see detailed health metrics</p>
+        
+        <div class="organ-map" id="organMap">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600'%3E%3Crect fill='%23f0f9ff' width='400' height='600'/%3E%3Cellipse cx='200' cy='80' rx='60' ry='70' fill='%23dbeafe' stroke='%233b82f6' stroke-width='2'/%3E%3Cellipse cx='200' cy='250' rx='100' ry='150' fill='%23dbeafe' stroke='%233b82f6' stroke-width='2'/%3E%3Ctext x='200' y='250' text-anchor='middle' font-size='20' fill='%233b82f6'%3EClick Organs%3C/text%3E%3C/svg%3E" alt="Body Map" style="width: 100%; border-radius: 12px;">
+          
+          <div class="organ-hotspot" style="top: 25%; left: 45%;" onclick="showOrganDetail('heart')" title="Heart">💗</div>
+          <div class="organ-hotspot" style="top: 8%; left: 45%;" onclick="showOrganDetail('brain')" title="Brain">🧠</div>
+          <div class="organ-hotspot" style="top: 22%; left: 30%;" onclick="showOrganDetail('lungs')" title="Lungs">🫁</div>
+          <div class="organ-hotspot" style="top: 35%; left: 40%;" onclick="showOrganDetail('stomach')" title="Stomach">🍽️</div>
+          <div class="organ-hotspot" style="top: 35%; left: 55%;" onclick="showOrganDetail('liver')" title="Liver">🏥</div>
+        </div>
+      </div>
+      
+      <div id="organDetailModal" class="modal-overlay">
+        <div class="modal">
+          <h2 id="organTitle">Organ Details</h2>
+          <div id="organContent"></div>
+          <button class="btn btn-primary" onclick="closeOrganDetail()" style="margin-top: 1rem; width: 100%;">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/body-visualization.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    let bodyViz, heartViz, brainViz;
+    let waveAnimations = {};
+    let currentSlide = 0;
+    const slides = [
+      { id: 'slide-heart', title: '🫀 Live Heart Activity', canvas: 'heartCanvas' },
+      { id: 'slide-brain', title: '🧠 Neural Network Activity', canvas: 'brainCanvas' },
+      { id: 'slide-body', title: '🧬 Full Body Scan', canvas: 'bodyCanvas' }
+    ];
+    
+    // Initialize visualization on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initialize visualizations
+      // Note: In a real app, we'd use separate instances or a more complex manager
+      // For this demo, we'll reuse the BodyVisualization class but target different canvases
+      
+      // Heart Slide
+      heartViz = new BodyVisualization();
+      heartViz.init('heartCanvas');
+      heartViz.updateHeartRate(75); // Default
+      
+      // Brain Slide
+      brainViz = new BodyVisualization();
+      brainViz.init('brainCanvas');
+      brainViz.triggerNeuronActivity(); // Start active
+      
+      // Body Slide
+      bodyViz = new BodyVisualization();
+      bodyViz.init('bodyCanvas');
+      
+      // Get latest health data
+      const todayEntry = StorageManager.getEntryByDate(App.getTodayDate());
+      if (todayEntry && todayEntry.heartRate) {
+        heartViz.updateHeartRate(todayEntry.heartRate);
+        document.getElementById('currentHeartRate').textContent = todayEntry.heartRate;
+      }
+      
+      // Initialize wave animations for stats
+      initWaveAnimations();
+    });
+
+    // Carousel Functions
+    function showSlide(index) {
+      // Hide all slides
+      document.querySelectorAll('.viz-slide').forEach(slide => slide.classList.remove('active'));
+      document.querySelectorAll('.indicator').forEach(ind => ind.classList.remove('active'));
+      
+      // Show target slide
+      document.getElementById(slides[index].id).classList.add('active');
+      document.querySelectorAll('.indicator')[index].classList.add('active');
+      document.getElementById('vizTitle').textContent = slides[index].title;
+      
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      let next = currentSlide + 1;
+      if (next >= slides.length) next = 0;
+      showSlide(next);
+    }
+
+    function prevSlide() {
+      let prev = currentSlide - 1;
+      if (prev < 0) prev = slides.length - 1;
+      showSlide(prev);
+    }
+
+    function switchSlide(index) {
+      showSlide(index);
+    }
+    
+    function scanBody() {
+        App.showToast('🔍 Scanning full body metrics...', 'info');
+        setTimeout(() => {
+            App.showToast('✅ Scan complete: All systems nominal', 'success');
+        }, 2000);
+    }
+    
+    function showVitals() {
+        App.showToast('📊 Vitals overlay activated', 'success');
+    }
+    
+    // Initialize mini wave visualizations
+    function initWaveAnimations() {
+      const waves = ['heartWave', 'brainWave', 'oxygenWave', 'metabolismWave'];
+      
+      waves.forEach(waveId => {
+        const canvas = document.getElementById(waveId);
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 60;
+        
+        let time = 0;
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = '#14b8a6';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          
+          for (let x = 0; x < canvas.width; x++) {
+            const y = canvas.height / 2 + Math.sin(x * 0.05 + time) * 15;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          
+          ctx.stroke();
+          time += 0.1;
+          waveAnimations[waveId] = requestAnimationFrame(animate);
+        };
+        
+        animate();
+      });
+    }
+    
+    // Control functions
+    function triggerHeartbeat() {
+      if (bodyViz) {
+        const newRate = Math.floor(Math.random() * 40) + 60; // 60-100 BPM
+        bodyViz.updateHeartRate(newRate);
+        document.getElementById('currentHeartRate').textContent = newRate;
+        App.showToast('💗 Heart rate updated!', 'success');
+      }
+    }
+    
+    function triggerBrainActivity() {
+      if (bodyViz) {
+        bodyViz.triggerNeuronActivity();
+        document.getElementById('brainActivity').textContent = 'High Activity';
+        App.showToast('🧠 Neural activity triggered!', 'success');
+        
+        setTimeout(() => {
+          document.getElementById('brainActivity').textContent = 'Active';
+        }, 3000);
+      }
+    }
+    
+    function addBloodFlow() {
+      if (bodyViz) {
+        bodyViz.initParticles();
+        App.showToast('🩸 Blood flow increased!', 'success');
+      }
+    }
+    
+    function showOxygenation() {
+      const level = Math.floor(Math.random() * 3) + 96; // 96-99%
+      document.getElementById('oxygenLevel').textContent = level + '%';
+      App.showToast('🌬️ Oxygen level updated!', 'success');
+    }
+    
+    // Organ detail modal
+    const organDetails = {
+      heart: {
+        title: '❤️ Heart',
+        content: `
+          <p><strong>Current Status: Healthy</strong></p>
+          <ul>
+            <li>Heart Rate: <span id="modalHeartRate">75</span> BPM</li>
+            <li>Rhythm: Regular Sinus Rhythm</li>
+            <li>Blood Pressure: Normal</li>
+            <li>Cardiac Output: Optimal</li>
+          </ul>
+          <p style="margin-top: 1rem; color: var(--success);">✅ Your heart is functioning well. Keep up your exercise routine!</p>
+        `
+      },
+      brain: {
+        title: '🧠 Brain',
+        content: `
+          <p><strong>Cognitive Function: Excellent</strong></p>
+          <ul>
+            <li>Neural Activity: Active</li>
+            <li>Neurotransmitter Levels: Balanced</li>
+            <li>Sleep Quality: Good (based on recent data)</li>
+            <li>Stress Levels: Low to Moderate</li>
+          </ul>
+          <p style="margin-top: 1rem; color: var(--success);">✅ Your brain health is optimal. Continue meditation and good sleep habits!</p>
+        `
+      },
+      lungs: {
+        title: '🫁 Lungs',
+        content: `
+          <p><strong>Respiratory Function: Healthy</strong></p>
+          <ul>
+            <li>Oxygen Saturation: 98%</li>
+            <li>Breathing Rate: Normal</li>
+            <li>Lung Capacity: Good</li>
+            <li>Air Quality Exposure: Acceptable</li>
+          </ul>
+          <p style="margin-top: 1rem; color: var(--success);">✅ Your lungs are healthy. Consider breathing exercises for even better capacity!</p>
+        `
+      },
+      stomach: {
+        title: '🍽️ Digestive System',
+        content: `
+          <p><strong>Digestive Health: Good</strong></p>
+          <ul>
+            <li>Metabolism: Normal</li>
+            <li>Nutrient Absorption: Efficient</li>
+            <li>Hydration: Adequate</li>
+            <li>Diet Quality: Balanced</li>
+          </ul>
+          <p style="margin-top: 1rem; color: var(--success);">✅ Your digestive system is working well. Continue your balanced diet!</p>
+        `
+      },
+      liver: {
+        title: '🏥 Liver',
+        content: `
+          <p><strong>Liver Function: Healthy</strong></p>
+          <ul>
+            <li>Detoxification: Efficient</li>
+            <li>Enzyme Levels: Normal</li>
+            <li>Bile Production: Regular</li>
+            <li>Fat Metabolism: Balanced</li>
+          </ul>
+          <p style="margin-top: 1rem; color: var(--success);">✅ Your liver is functioning optimally!</p>
+        `
+      }
+    };
+    
+    function showOrganDetail(organ) {
+      const modal = document.getElementById('organDetailModal');
+      const detail = organDetails[organ];
+      
+      if (detail) {
+        document.getElementById('organTitle').textContent = detail.title;
+        document.getElementById('organContent').innerHTML = detail.content;
+        
+        // Update heart rate in modal if it's the heart
+        if (organ === 'heart') {
+          setTimeout(() => {
+            const hrElement = document.getElementById('modalHeartRate');
+            if (hrElement) {
+              hrElement.textContent = document.getElementById('currentHeartRate').textContent;
+            }
+          }, 100);
+        }
+        
+        modal.classList.add('active');
+      }
+    }
+    
+    function closeOrganDetail() {
+      document.getElementById('organDetailModal').classList.remove('active');
+    }
+    
+    // Close modal on overlay click
+    document.getElementById('organDetailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'organDetailModal') {
+        closeOrganDetail();
+      }
+    });
+  </script>
+</body>
+</html>

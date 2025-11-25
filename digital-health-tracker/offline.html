@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14b8a6">
+  <title>Offline - Digital Health Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      <div class="content-section text-center" style="max-width: 600px; margin-left: auto; margin-right: auto; padding: 4rem 2rem;">
+        <div style="font-size: 5rem; margin-bottom: 1rem;">📡</div>
+        <h1>You're Offline</h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+          It looks like you've lost your internet connection. Don't worry, your health data is still safe and accessible!
+        </p>
+        
+        <div class="card" style="text-align: left; margin-bottom: 2rem;">
+          <h3>What you can do:</h3>
+          <ul style="line-height: 2;">
+            <li>✅ View your existing health data</li>
+            <li>✅ Log new health entries</li>
+            <li>✅ View charts and statistics</li>
+            <li>✅ Access all offline features</li>
+          </ul>
+        </div>
+        
+        <button class="btn btn-primary btn-lg" onclick="window.location.href='dashboard.html'">
+          Go to Dashboard
+        </button>
+        
+        <p style="margin-top: 2rem; color: var(--text-tertiary); font-size: 0.875rem;">
+          The app will automatically sync when you're back online
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Health Summary - Weekly and Monthly Analytics">
+  <meta name="theme-color" content="#14b8a6">
+  
+  <title>Summary - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icon-72x72.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="summary.html" class="nav-link active">Summary</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link">Settings</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <div class="content-section">
+        <h1>📊 Health Summary</h1>
+        <p style="color: var(--text-secondary);">Analyze your health trends over time</p>
+      </div>
+      
+      <!-- Time Period Selector -->
+      <div class="content-section">
+        <div class="flex gap-1">
+          <button class="btn btn-primary" id="weekBtn" onclick="showPeriod('week')">7 Days</button>
+          <button class="btn btn-outline" id="monthBtn" onclick="showPeriod('month')">30 Days</button>
+          <button class="btn btn-outline" id="allBtn" onclick="showPeriod('all')">All Time</button>
+        </div>
+      </div>
+      
+      <!-- Summary Stats -->
+      <div class="grid grid-cols-3">
+        <div class="card">
+          <h3>Activity Summary</h3>
+          <div style="margin-top: 1rem;">
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Total Steps</p>
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);" id="totalSteps">--</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Average Steps/Day</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="avgStepsDay">--</p>
+            </div>
+            <div>
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Goal Achievement</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="stepsGoalRate">--</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Sleep Summary</h3>
+          <div style="margin-top: 1rem;">
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Total Sleep</p>
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);" id="totalSleep">--</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Average Sleep/Night</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="avgSleepNight">--</p>
+            </div>
+            <div>
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Quality Nights (≥7h)</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="qualityNights">--</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Hydration Summary</h3>
+          <div style="margin-top: 1rem;">
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Total Water</p>
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);" id="totalWater">--</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Average Water/Day</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="avgWaterDay">--</p>
+            </div>
+            <div>
+              <p style="color: var(--text-tertiary); font-size: 0.875rem;">Goal Achievement</p>
+              <p style="font-size: 1.25rem; font-weight: 600;" id="waterGoalRate">--</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Trend Analysis -->
+      <div class="content-section">
+        <h2>📈 Trend Analysis</h2>
+        <div id="trendInsights"></div>
+      </div>
+      
+      <!-- Charts -->
+      <div class="grid grid-cols-2">
+        <div class="chart-container">
+          <h3>Steps Overview</h3>
+          <canvas id="summaryStepsChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+          <h3>Sleep Overview</h3>
+          <canvas id="summarySleepChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+          <h3>Heart Rate Overview</h3>
+          <canvas id="summaryHRChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+          <h3>Calories Overview</h3>
+          <canvas id="summaryCaloriesChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Insights -->
+      <div class="content-section">
+        <h2>💡 Health Insights</h2>
+        <div id="healthInsights"></div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/recommendations.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    let currentPeriod = 'week';
+    let allEntries = [];
+    
+    function initSummary() {
+      // Load all entries
+      allEntries = StorageManager.getEntries();
+      
+      if (!allEntries || allEntries.length === 0) {
+        document.querySelector('.container').innerHTML = `
+          <div class="content-section text-center">
+            <h2>No data yet</h2>
+            <p style="color: var(--text-secondary);">Start logging your health data to see summary analytics!</p>
+            <a href="dashboard.html" class="btn btn-primary" style="margin-top: 1rem;">Go to Dashboard</a>
+          </div>
+        `;
+        return;
+      }
+      
+      showPeriod('week');
+    }
+    
+    function showPeriod(period) {
+      currentPeriod = period;
+      
+      // Update button states
+      document.getElementById('weekBtn').className = period === 'week' ? 'btn btn-primary' : 'btn btn-outline';
+      document.getElementById('monthBtn').className = period === 'month' ? 'btn btn-primary' : 'btn btn-outline';
+      document.getElementById('allBtn').className = period === 'all' ? 'btn btn-primary' : 'btn btn-outline';
+      
+      // Get entries for period
+      let entries;
+      if (period === 'week') {
+        entries = StorageManager.getLastNDays(7);
+      } else if (period === 'month') {
+        entries = StorageManager.getLastNDays(30);
+      } else {
+        entries = allEntries;
+      }
+      
+      // Update summaries
+      updateSummaries(entries);
+      
+      // Update charts
+      const goals = StorageManager.getGoals();
+      DashboardManager.renderStepsChart('summaryStepsChart', entries, goals.steps);
+      DashboardManager.renderSleepChart('summarySleepChart', entries, goals.sleep);
+      DashboardManager.renderHeartRateChart('summaryHRChart', entries);
+      DashboardManager.renderCaloriesChart('summaryCaloriesChart', entries, goals.calories);
+      
+      // Show trend analysis
+      const trendAnalysis = RecommendationEngine.analyzeTrends(entries);
+      displayTrendAnalysis(trendAnalysis);
+    }
+    
+    function updateSummaries(entries) {
+      const goals = StorageManager.getGoals();
+      
+      // Activity summary
+      const totalSteps = entries.reduce((sum, e) => sum + (e.steps || 0), 0);
+      const avgSteps = totalSteps / entries.length;
+      const stepsGoalDays = entries.filter(e => e.steps >= goals.steps).length;
+      const stepsGoalRate = entries.length > 0 ? (stepsGoalDays / entries.length * 100).toFixed(0) : 0;
+      
+      document.getElementById('totalSteps').textContent = totalSteps.toLocaleString();
+      document.getElementById('avgStepsDay').textContent = Math.round(avgSteps).toLocaleString();
+      document.getElementById('stepsGoalRate').textContent = `${stepsGoalRate}%`;
+      
+      // Sleep summary
+      const totalSleep = entries.reduce((sum, e) => sum + (e.sleep || 0), 0);
+      const avgSleep = totalSleep / entries.length;
+      const qualityNights = entries.filter(e => e.sleep >= 7).length;
+      
+      document.getElementById('totalSleep').textContent = `${totalSleep.toFixed(1)}h`;
+      document.getElementById('avgSleepNight').textContent = `${avgSleep.toFixed(1)}h`;
+      document.getElementById('qualityNights').textContent = `${qualityNights} / ${entries.length}`;
+      
+      // Hydration summary
+      const totalWater = entries.reduce((sum, e) => sum + (e.water || 0), 0);
+      const avgWater = totalWater / entries.length;
+      const waterGoalDays = entries.filter(e => e.water >= goals.water).length;
+      const waterGoalRate = entries.length > 0 ? (waterGoalDays / entries.length * 100).toFixed(0) : 0;
+      
+      document.getElementById('totalWater').textContent = `${totalWater} glasses`;
+      document.getElementById('avgWaterDay').textContent = `${avgWater.toFixed(1)} glasses`;
+      document.getElementById('waterGoalRate').textContent = `${waterGoalRate}%`;
+    }
+    
+    function displayTrendAnalysis(analysis) {
+      const container = document.getElementById('trendInsights');
+      container.innerHTML = '';
+      
+      if (analysis.trends.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-tertiary);">Not enough data to analyze trends. Keep logging!</p>';
+        return;
+      }
+      
+      analysis.trends.forEach(trend => {
+        const trendCard = document.createElement('div');
+        trendCard.className = 'flag';
+        trendCard.style.background = trend.direction === 'positive' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(245, 158, 11, 0.1)';
+        trendCard.style.borderLeftColor = trend.direction === 'positive' ? 'var(--success-color)' : 'var(--warning-color)';
+        
+        const icon = trend.direction === 'positive' ? '📈' : '📊';
+        
+        trendCard.innerHTML = `
+          <div class="flag-icon">${icon}</div>
+          <div>
+            <strong>${trend.message}</strong>
+            <p style="color: var(--text-secondary); margin: 0; font-size: 0.875rem;">${trend.category.charAt(0).toUpperCase() + trend.category.slice(1)}: ${trend.value}</p>
+          </div>
+        `;
+        
+        container.appendChild(trendCard);
+      });
+      
+      // Display insights
+      const insightsContainer = document.getElementById('healthInsights');
+      insightsContainer.innerHTML = '';
+      
+      if (analysis.insights.length > 0) {
+        analysis.insights.forEach(insight => {
+          const insightEl = document.createElement('div');
+          insightEl.className = 'flag';
+          insightEl.style.background = 'rgba(59, 130, 246, 0.1)';
+          insightEl.style.borderLeftColor = 'rgb(59, 130, 246)';
+          
+          insightEl.innerHTML = `
+            <div class="flag-icon">💡</div>
+            <div><p style="margin: 0;">${insight}</p></div>
+          `;
+          
+          insightsContainer.appendChild(insightEl);
+        });
+      }
+      
+      // Add daily tip
+      const tip = RecommendationEngine.getDailyTip();
+      const tipEl = document.createElement('div');
+      tipEl.className = 'flag';
+      tipEl.style.background = 'rgba(139, 92, 246, 0.1)';
+      tipEl.style.borderLeftColor = 'var(--secondary-color)';
+      
+      tipEl.innerHTML = `
+        <div class="flag-icon">💪</div>
+        <div>
+          <strong>Daily Tip</strong>
+          <p style="color: var(--text-secondary); margin: 0; font-size: 0.875rem;">${tip.tip}</p>
+        </div>
+      `;
+      
+      insightsContainer.appendChild(tipEl);
+    }
+    
+    window.addEventListener('DOMContentLoaded', initSummary);
+  </script>
+</body>
+</html>

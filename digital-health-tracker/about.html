@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About - Digital Health Tracker Team and Project Info">
+  <meta name="theme-color" content="#14b8a6">
+  
+  <title>About - Digital Health Tracker</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icon-72x72.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="gradient-background"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-brand">🏥 Health Tracker</a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="summary.html" class="nav-link">Summary</a></li>
+        <li><a href="doctor.html" class="nav-link">Doctor View</a></li>
+        <li><a href="settings.html" class="nav-link">Settings</a></li>
+        <li><a href="about.html" class="nav-link active">About</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="page-wrapper">
+    <div class="container">
+      
+      <!-- Hero Section -->
+      <div class="content-section text-center">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">🏥 Digital Health Tracker</h1>
+        <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+          Your personal wellness companion for tracking, analyzing, and improving your health metrics every day.
+        </p>
+      </div>
+      
+      <!-- Problem Statement -->
+      <div class="content-section">
+        <h2>🎯 Problem Statement</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+          In today's fast-paced world, many individuals struggle to maintain awareness of their health and wellness. 
+          Tracking daily health metrics like steps, sleep, water intake, and heart rate can be tedious and scattered 
+          across multiple apps and devices. There's a need for a unified, user-friendly platform that consolidates 
+          health data, provides actionable insights, and helps users make informed decisions about their wellness journey.
+        </p>
+      </div>
+      
+      <!-- Solution -->
+      <div class="content-section">
+        <h2>💡 Our Solution</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+          Digital Health Tracker is a Progressive Web App (PWA) designed to simplify health monitoring. Our solution offers:
+        </p>
+        
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+            <h3>Comprehensive Tracking</h3>
+            <p style="color: var(--text-secondary);">Track steps, heart rate, sleep, water, calories, and mood in one place</p>
+          </div>
+          
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📈</div>
+            <h3>Visual Analytics</h3>
+            <p style="color: var(--text-secondary);">Beautiful charts and graphs to visualize your health trends</p>
+          </div>
+          
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
+            <h3>Smart Recommendations</h3>
+            <p style="color: var(--text-secondary);">AI-powered insights and personalized health tips based on your data</p>
+          </div>
+          
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👨‍⚕️</div>
+            <h3>Doctor-Friendly Reports</h3>
+            <p style="color: var(--text-secondary);">Generate PDF reports to share with healthcare providers</p>
+          </div>
+          
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>
+            <h3>PWA Technology</h3>
+            <p style="color: var(--text-secondary);">Install as an app, works offline, syncs seamlessly</p>
+          </div>
+          
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+            <h3>Privacy First</h3>
+            <p style="color: var(--text-secondary);">All data stored locally on your device, you're in control</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Features -->
+      <div class="content-section">
+        <h2>✨ Key Features</h2>
+        <ul style="font-size: 1.1rem; line-height: 2; list-style: none; padding-left: 0;">
+          <li>✅ Quick entry logging with floating action button</li>
+          <li>✅ Health score calculation (0-100) based on all metrics</li>
+          <li>✅ Interactive Chart.js visualizations for all health metrics</li>
+          <li>✅ Mood tracking with visual heatmap</li>
+          <li>✅ Rule-based recommendation engine for personalized tips</li>
+          <li>✅ Health alerts and flags detection (e.g., low sleep, high HR)</li>
+          <li>✅ Weekly and monthly trend analysis</li>
+          <li>✅ Export data as CSV, JSON, or PDF reports</li>
+          <li>✅ Light and dark theme support</li>
+          <li>✅ Browser notifications for daily reminders</li>
+          <li>✅ Fully responsive design for all devices</li>
+          <li>✅ Accessibility features (ARIA labels, keyboard navigation)</li>
+        </ul>
+      </div>
+      
+      <!-- Project Gallery Section -->
+      <div class="content-section">
+        <h2>📸 Project Gallery</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Explore the key features of the Digital Health Tracker</p>
+        
+        <div class="phone-showcase-container">
+          <!-- Phone Frame -->
+          <div class="phone-showcase">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <div class="carousel-track" id="carouselTrack">
+                  <div class="carousel-slide">
+                    <img src="assets/images/01_login.png" alt="Login Screen">
+                  </div>
+                  <div class="carousel-slide">
+                    <img src="assets/images/02_dashboard.png" alt="Dashboard">
+                  </div>
+                  <div class="carousel-slide">
+                    <img src="assets/images/03_summary_charts.png" alt="Analytics">
+                  </div>
+                  <div class="carousel-slide">
+                    <img src="assets/images/04_doctor_view.png" alt="Doctor View">
+                  </div>
+                </div>
+                
+                <div class="carousel-nav">
+                  <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+                  <div class="carousel-dot" onclick="goToSlide(1)"></div>
+                  <div class="carousel-dot" onclick="goToSlide(2)"></div>
+                  <div class="carousel-dot" onclick="goToSlide(3)"></div>
+                </div>
+                
+                <button class="carousel-btn prev" onclick="prevSlide()">&#10094;</button>
+                <button class="carousel-btn next" onclick="nextSlide()">&#10095;</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Feature Description -->
+          <div class="feature-info">
+            <div id="featureText">
+              <div class="feature-title">Secure Login</div>
+              <div class="feature-desc">Start your journey with a secure, personalized onboarding experience. Your data stays private on your device.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technology Stack -->
+      <div class="content-section">
+        <h2>🛠️ Technology Stack</h2>
+        <div class="grid grid-cols-3">
+          <div class="card">
+            <h4>Frontend</h4>
+            <ul style="color: var(--text-secondary); list-style: none; padding-left: 0;">
+              <li>• HTML5</li>
+              <li>• CSS3 (Custom Properties)</li>
+              <li>• JavaScript (ES6+)</li>
+              <li>• Chart.js</li>
+            </ul>
+          </div>
+          
+          <div class="card">
+            <h4>PWA Features</h4>
+            <ul style="color: var(--text-secondary); list-style: none; padding-left: 0;">
+              <li>• Service Worker</li>
+              <li>• Web Manifest</li>
+              <li>• LocalStorage API</li>
+              <li>• Notifications API</li>
+            </ul>
+          </div>
+          
+          <div class="card">
+            <h4>Export & Reports</h4>
+            <ul style="color: var(--text-secondary); list-style: none; padding-left: 0;">
+              <li>• jsPDF</li>
+              <li>• CSV Export</li>
+              <li>• JSON Import/Export</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Team -->
+      <div class="content-section">
+        <h2>👥 Team</h2>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+          Built for WIE Hackearth 2025 - Empowering digital health innovation
+        </p>
+        
+        <div class="card text-center">
+          <p style="font-size: 1.25rem; margin-bottom: 1rem;">
+            This project was developed as part of the WIE Hackearth 2025 hackathon, focusing on creating 
+            accessible and user-friendly digital health solutions.
+          </p>
+          <p style="color: var(--text-tertiary);">
+            For more information about the hackathon and team details, please refer to the original presentation.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Open Source -->
+      <div class="content-section">
+        <h2>🌐 Open Source & Resources</h2>
+        <div class="flex gap-2" style="flex-wrap: wrap;">
+          <a href="#" class="btn btn-outline">📂 View Source Code</a>
+          <a href="#" class="btn btn-outline">📊 View Presentation</a>
+          <a href="#" class="btn btn-outline">📖 Documentation</a>
+          <a href="#" class="btn btn-outline">🐛 Report Issues</a>
+        </div>
+      </div>
+      
+      <!-- Roadmap -->
+      <div class="content-section">
+        <h2>🚀 Future Roadmap</h2>
+        <div class="grid grid-cols-2">
+          <div>
+            <h3>Upcoming Features</h3>
+            <ul style="line-height: 2;">
+              <li>🔄 Cloud sync across devices</li>
+              <li>🤝 Integration with fitness wearables</li>
+              <li>🧠 Advanced ML-based predictions</li>
+              <li>👨‍👩‍👧‍👦 Family account support</li>
+              <li>🏆 Gamification and achievements</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3>Long-term Goals</h3>
+            <ul style="line-height: 2;">
+              <li>🌍 Multi-language support</li>
+              <li>📱 Native mobile apps (iOS/Android)</li>
+              <li>🩺 Telemedicine integration</li>
+              <li>📊 Advanced analytics dashboard</li>
+              <li>🤖 AI health assistant chatbot</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contact -->
+      <div class="content-section text-center">
+        <h2>📧 Get in Touch</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Have questions or feedback? We'd love to hear from you!
+        </p>
+        <a href="mailto:contact@healthtracker.app" class="btn btn-primary">Contact Us</a>
+      </div>
+      
+      <!-- Footer -->
+      <div style="text-align: center; padding: 2rem 0; color: var(--text-tertiary); border-top: 1px solid var(--border-color);">
+        <p>© 2025 Digital Health Tracker. Built with ❤️ for WIE Hackearth 2025.</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+          Your health data is stored locally on your device and never sent to any server.
+        </p>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
